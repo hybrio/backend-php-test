@@ -34,8 +34,15 @@
     <div class="container">
       <div class="row">
         {% block content %}{% endblock %}
-      </div>
     </div>
+    {% for type, messages in app.session.flashbag.all() %}
+      {% for message in messages %}
+          <div class="flash-{{type}}"">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{message}}
+          </div>
+      {% endfor %}
+    {% endfor %}
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>

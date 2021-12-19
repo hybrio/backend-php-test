@@ -91,6 +91,8 @@ $app->post('/todo/add', function (Request $request) use ($app) {
     $sql = "INSERT INTO todos (user_id, description) VALUES ('$user_id', '$description')";
     $app['db']->executeUpdate($sql);
 
+    $app['session']->getFlashBag()->add('add', 'todo added');
+
     return $app->redirect('/todo');
 });
 
@@ -108,5 +110,6 @@ $app->match('/todo/delete/{id}', function ($id) use ($app) {
     $sql = "DELETE FROM todos WHERE id = '$id'";
     $app['db']->executeUpdate($sql);
 
+    $app['session']->getFlashBag()->add('delete', 'todo removed');
     return $app->redirect('/todo');
 });
