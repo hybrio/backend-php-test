@@ -4,7 +4,7 @@
 <div class="col-md-4 col-md-offset-4">
     <h1>Todo List:</h1>
     <table class="table table-striped">
-        <th>#</th><th>User</th><th>Description</th><th></th>
+        <th>#</th><th>User</th><th>Description</th><th>Completed</th><th></th>
         {% for todo in todos %}
             <tr>
                 <td>{{ todo.id }}</td>
@@ -13,6 +13,15 @@
                     <a href="{{ app.request.baseurl }}/todo/{{ todo.id }}">
                        {{ todo.description }}
                     </a>
+                </td>
+                <td>
+                    <form method="post" action="{{ app.request.baseurl }}/todo/completedToggle/{{ todo.id }}">
+                        <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()"
+                            {%if todo.completed %}
+                                checked
+                            {% endif %}
+                        >
+                    </form>
                 </td>
                 <td>
                     <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
