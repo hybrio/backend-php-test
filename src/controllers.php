@@ -3,7 +3,7 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
+$app['twig'] = $app->share($app->extend('twig', function ($twig, $app) {
     $twig->addGlobal('user', $app['session']->get('user'));
 
     return $twig;
@@ -25,7 +25,7 @@ $app->match('/login', function (Request $request) use ($app) {
         $sql = "SELECT * FROM users WHERE username = '$username' and password = '$password'";
         $user = $app['db']->fetchAssoc($sql);
 
-        if ($user){
+        if ($user) {
             $app['session']->set('user', $user);
             return $app->redirect('/todo');
         }
@@ -47,7 +47,7 @@ $app->get('/todo', function (Request $request, $id) use ($app) {
 
     //get page number or redirect to page 1
     $page = $request->query->get('pageno');
-    if($page == null){
+    if ($page == null) {
         return $app->redirect('/todo?pageno=1');
     }
 
@@ -57,13 +57,13 @@ $app->get('/todo', function (Request $request, $id) use ($app) {
     //work out total pages
     $sql = "SELECT COUNT(*) FROM todos WHERE user_id = '${user['id']}'";
     $query_result = $app['db']->fetchAssoc($sql);
-    $total_pages = ceil($query_result['COUNT(*)']/$page_limit);
+    $total_pages = ceil($query_result['COUNT(*)'] / $page_limit);
 
     //get todos from page
     $page_offset = ($page - 1) * $page_limit;
     $sql = "SELECT * FROM todos WHERE user_id = '${user['id']}' LIMIT $page_offset, $page_limit";
     $todos = $app['db']->fetchAll($sql);
-    
+
     return $app['twig']->render('todos.html', [
         'todos' => $todos,
         'pageno' => $page,
@@ -78,7 +78,7 @@ $app->get('/todo/{id}', function ($id) use ($app) {
         return $app->redirect('/login');
     }
 
-    if ($id){
+    if ($id) {
         $sql = "SELECT * FROM todos WHERE id = '$id'";
         $todo = $app['db']->fetchAssoc($sql);
 
@@ -94,7 +94,7 @@ $app->get('/todo/{id}', function ($id) use ($app) {
         ]);
     }
 })
-->value('id', null);
+    ->value('id', null);
 
 
 $app->get('/todo/{id}/json', function ($id) use ($app) {
@@ -102,14 +102,14 @@ $app->get('/todo/{id}/json', function ($id) use ($app) {
         return $app->redirect('/login');
     }
 
-    if ($id){
+    if ($id) {
         $sql = "SELECT * FROM todos WHERE id = '$id'";
         $todo = $app['db']->fetchAssoc($sql);
 
         return json_encode($todo);
     }
 })
-->value('id', null);
+    ->value('id', null);
 
 
 $app->post('/todo/add', function (Request $request) use ($app) {
@@ -127,20 +127,20 @@ $app->post('/todo/add', function (Request $request) use ($app) {
 
     //get page number or redirect to page 1
     $page = $request->query->get('pageno');
-    if($page == null){
+    if ($page == null) {
         return $app->redirect('/todo?pageno=1');
     }
     return $app->redirect("/todo?pageno=$page");
 });
 
-$app->match('/todo/completedToggle/{id}', function (Request $request, $id) use ($app) {
+$app->match('/todo/completed_toggle/{id}', function (Request $request, $id) use ($app) {
 
     $sql = "UPDATE todos SET completed = !completed WHERE id = '$id'";
     $app['db']->executeUpdate($sql);
 
     //get page number or redirect to page 1
     $page = $request->query->get('pageno');
-    if($page == null){
+    if ($page == null) {
         return $app->redirect('/todo?pageno=1');
     }
     return $app->redirect("/todo?pageno=$page");
@@ -153,10 +153,10 @@ $app->match('/todo/delete/{id}', function (Request $request, $id) use ($app) {
     $app['db']->executeUpdate($sql);
 
     $app['session']->getFlashBag()->add('delete', 'todo removed');
-    
+
     //get page number or redirect to page 1
     $page = $request->query->get('pageno');
-    if($page == null){
+    if ($page == null) {
         return $app->redirect('/todo?pageno=1');
     }
     return $app->redirect("/todo?pageno=$page");

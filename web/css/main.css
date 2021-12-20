@@ -2,8 +2,8 @@ body {
   padding-top: 50px;
 }
 
-.login-form > div {
-    margin-top: 10px;
+.login-form>div {
+  margin-top: 10px;
 }
 
 td input[type="checkbox"] {
@@ -15,7 +15,8 @@ td input[type="checkbox"] {
 /* The delete message box */
 .flash-delete {
   padding: 20px;
-  background-color: #f44336; /* Red */
+  background-color: #f44336;
+  /* Red */
   color: white;
   margin-bottom: 15px;
 }
@@ -23,7 +24,8 @@ td input[type="checkbox"] {
 /* The add message box */
 .flash-add {
   padding: 20px;
-  background-color: #04AA6D; /* Red */
+  background-color: #04AA6D;
+  /* Red */
   color: white;
   margin-bottom: 15px;
 }

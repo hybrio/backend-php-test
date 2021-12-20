@@ -38,7 +38,8 @@
                 </a>
             </td>
             <td>
-                <form method="post" action="{{ app.request.baseurl }}/todo/completedToggle/{{ todo.id }}?pageno={{ pageno }}">
+                <form method="post"
+                    action="{{ app.request.baseurl }}/todo/completed_toggle/{{ todo.id }}?pageno={{ pageno }}">
                     <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()" {%if
                         todo.completed %} checked {% endif %}>
                 </form>

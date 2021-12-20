@@ -4,23 +4,25 @@
 <div class="col-md-4 col-md-offset-4">
     <h1>Todo:</h1>
     <table class="table table-striped">
-        <th>#</th><th>User</th><th>Description</th><th>Completed</th><th></th>
+        <th>#</th>
+        <th>User</th>
+        <th>Description</th>
+        <th>Completed</th>
+        <th></th>
         <tr>
             <td>{{ todo.id }}</td>
             <td>{{ todo.user_id }}</td>
             <td>{{ todo.description }}</td>
             <td>
-                <form method="post" action="{{ app.request.baseurl }}/todo/completedToggle/{{ todo.id }}">
-                    <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()"
-                        {%if todo.completed %}
-                            checked
-                        {% endif %}
-                    >
+                <form method="post" action="{{ app.request.baseurl }}/todo/completed_toggle/{{ todo.id }}">
+                    <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()" {%if
+                        todo.completed %} checked {% endif %}>
                 </form>
             </td>
             <td>
                 <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
-                    <button type="submit" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
+                    <button type="submit" class="btn btn-xs btn-danger"><span
+                            class="glyphicon glyphicon-remove glyphicon-white"></span></button>
                 </form>
             </td>
         </tr>
