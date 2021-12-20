@@ -2,38 +2,60 @@
 
 {% block content %}
 <div class="col-md-4 col-md-offset-4">
+    <div class="text-center">
+        <ul class="pagination">
+            {%if pageno == 1 %}
+            <li class="disabled"><a href="#">First</a></li>
+            <li class="disabled"><a href="#">Prev</a></li>
+            {% else %}
+            <li><a href="?pageno=1">First</a></li>
+            <li><a href="?pageno={{ pageno - 1 }}">Prev</a></li>
+            {% endif %}
+
+            {%if pageno == total_pages %}
+            <li class="disabled"><a href="#">Next</a></li>
+            <li class="disabled"><a href="#">Last</a></li>
+            {% else %}
+            <li><a href="?pageno={{ pageno + 1 }}">Next</a></li>
+            <li><a href="?pageno={{ total_pages }}">Last</a></li>
+            {% endif %}
+        </ul>
+    </div>
     <h1>Todo List:</h1>
     <table class="table table-striped">
-        <th>#</th><th>User</th><th>Description</th><th>Completed</th><th></th>
+        <th>#</th>
+        <th>User</th>
+        <th>Description</th>
+        <th>Completed</th>
+        <th></th>
         {% for todo in todos %}
-            <tr>
-                <td>{{ todo.id }}</td>
-                <td>{{ todo.user_id }}</td>
-                <td>
-                    <a href="{{ app.request.baseurl }}/todo/{{ todo.id }}">
-                       {{ todo.description }}
-                    </a>
-                </td>
-                <td>
-                    <form method="post" action="{{ app.request.baseurl }}/todo/completedToggle/{{ todo.id }}">
-                        <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()"
-                            {%if todo.completed %}
-                                checked
-                            {% endif %}
-                        >
-                    </form>
-                </td>
-                <td>
-                    <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
-                        <button type="submit" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
-                    </form>
-                </td>
-            </tr>
+        <tr>
+            <td>{{ todo.id }}</td>
+            <td>{{ todo.user_id }}</td>
+            <td>
+                <a href="{{ app.request.baseurl }}/todo/{{ todo.id }}">
+                    {{ todo.description }}
+                </a>
+            </td>
+            <td>
+                <form method="post" action="{{ app.request.baseurl }}/todo/completedToggle/{{ todo.id }}?pageno={{ pageno }}">
+                    <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()" {%if
+                        todo.completed %} checked {% endif %}>
+                </form>
+            </td>
+            <td>
+                <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}?pageno={{ pageno }}">
+                    <button type="submit" class="btn btn-xs btn-danger"><span
+                            class="glyphicon glyphicon-remove glyphicon-white"></span></button>
+                </form>
+            </td>
+        </tr>
         {% endfor %}
         <tr>
-            <form method="post" action="{{ app.request.baseurl }}/todo/add">
+            <form method="post" action="{{ app.request.baseurl }}/todo/add?pageno={{ pageno }}">
                 <td colspan="3">
-                    <input type="textbox" name="description" class="small-6 small-center" placeholder="Description..." required>
+                    <input type="textbox" name="description" class="small-6 small-center" placeholder="Description..."
+                        required>
                 </td>
                 <td>
                     <button type="submit" class="btn btn-sm btn-primary">Add</button>

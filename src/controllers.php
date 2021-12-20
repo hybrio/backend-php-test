@@ -40,9 +40,41 @@ $app->get('/logout', function () use ($app) {
     return $app->redirect('/');
 });
 
+$app->get('/todo', function (Request $request, $id) use ($app) {
+    if (null === $user = $app['session']->get('user')) {
+        return $app->redirect('/login');
+    }
+
+    //get page number or redirect to page 1
+    $page = $request->query->get('pageno');
+    if($page == null){
+        return $app->redirect('/todo?pageno=1');
+    }
+
+    //constant limit to todos per page
+    $page_limit = 20;
+
+    //work out total pages
+    $sql = "SELECT COUNT(*) FROM todos WHERE user_id = '${user['id']}'";
+    $query_result = $app['db']->fetchAssoc($sql);
+    $total_pages = ceil($query_result['COUNT(*)']/$page_limit);
+
+    //get todos from page
+    $page_offset = ($page - 1) * $page_limit;
+    $sql = "SELECT * FROM todos WHERE user_id = '${user['id']}' LIMIT $page_offset, $page_limit";
+    $todos = $app['db']->fetchAll($sql);
+    
+    return $app['twig']->render('todos.html', [
+        'todos' => $todos,
+        'pageno' => $page,
+        'total_pages' => $total_pages,
+    ]);
+})
+    ->value('id', null);
+
 
 $app->get('/todo/{id}', function ($id) use ($app) {
-    if (null === $user = $app['session']->get('user')) {
+    if (null === $app['session']->get('user')) {
         return $app->redirect('/login');
     }
 
@@ -66,7 +98,7 @@ $app->get('/todo/{id}', function ($id) use ($app) {
 
 
 $app->get('/todo/{id}/json', function ($id) use ($app) {
-    if (null === $user = $app['session']->get('user')) {
+    if (null === $app['session']->get('user')) {
         return $app->redirect('/login');
     }
 
@@ -93,23 +125,39 @@ $app->post('/todo/add', function (Request $request) use ($app) {
 
     $app['session']->getFlashBag()->add('add', 'todo added');
 
-    return $app->redirect('/todo');
+    //get page number or redirect to page 1
+    $page = $request->query->get('pageno');
+    if($page == null){
+        return $app->redirect('/todo?pageno=1');
+    }
+    return $app->redirect("/todo?pageno=$page");
 });
 
-$app->match('/todo/completedToggle/{id}', function ($id) use ($app) {
+$app->match('/todo/completedToggle/{id}', function (Request $request, $id) use ($app) {
 
     $sql = "UPDATE todos SET completed = !completed WHERE id = '$id'";
     $app['db']->executeUpdate($sql);
 
-    return $app->redirect('/todo');
+    //get page number or redirect to page 1
+    $page = $request->query->get('pageno');
+    if($page == null){
+        return $app->redirect('/todo?pageno=1');
+    }
+    return $app->redirect("/todo?pageno=$page");
 });
 
 
-$app->match('/todo/delete/{id}', function ($id) use ($app) {
+$app->match('/todo/delete/{id}', function (Request $request, $id) use ($app) {
 
     $sql = "DELETE FROM todos WHERE id = '$id'";
     $app['db']->executeUpdate($sql);
 
     $app['session']->getFlashBag()->add('delete', 'todo removed');
-    return $app->redirect('/todo');
+    
+    //get page number or redirect to page 1
+    $page = $request->query->get('pageno');
+    if($page == null){
+        return $app->redirect('/todo?pageno=1');
+    }
+    return $app->redirect("/todo?pageno=$page");
 });
