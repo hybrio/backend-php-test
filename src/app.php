@@ -9,6 +9,8 @@ use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use DerAlex\Silex\YamlConfigServiceProvider;
+use Models\Users as Users;
+use Models\Todos as Todos;
 
 $app = new Application();
 $app->register(new SessionServiceProvider());
@@ -29,5 +31,7 @@ $app->register(new DoctrineServiceProvider, array(
         'charset'   => 'utf8',
     ),
 ));
+$app->users = new Users($app['db']);
+$app->todos = new Todos($app['db']);
 
 return $app;
