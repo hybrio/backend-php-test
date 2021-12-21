@@ -12,7 +12,7 @@
         <tr>
             <td>{{ todo.id }}</td>
             <td>{{ todo.user_id }}</td>
-            <td>{{ todo.description }}</td>
+            <td>{{ todo.description|e }}</td>
             <td>
                 <form method="post" action="{{ app.request.baseurl }}/todo/completed_toggle/{{ todo.id }}">
                     <input type="checkbox" id="completed" name="completed" onChange="this.form.submit()" {%if

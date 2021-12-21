@@ -50,10 +50,8 @@ $app->get('/todo', function (Request $request, $id) use ($app) {
         return $app->redirect('/todo?pageno=1');
     }
 
-    //get total number of pages
     $total_pages = $app->todos->get_total_pages($user);
 
-    //get current page todos
     $todos = $app->todos->get_page($user, $page);
 
     return $app['twig']->render('todos.html', [
@@ -111,6 +109,9 @@ $app->post('/todo/add', function (Request $request) use ($app) {
 });
 
 $app->match('/todo/completed_toggle/{id}', function (Request $request, $id) use ($app) {
+    if (null === $user = $app['session']->get('user')) {
+        return $app->redirect('/login');
+    }
 
     $app->todos->toggle_completed($id);
 
@@ -124,6 +125,9 @@ $app->match('/todo/completed_toggle/{id}', function (Request $request, $id) use 
 
 
 $app->match('/todo/delete/{id}', function (Request $request, $id) use ($app) {
+    if (null === $user = $app['session']->get('user')) {
+        return $app->redirect('/login');
+    }
 
     $app->todos->delete_todo($id);
 

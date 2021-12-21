@@ -14,10 +14,10 @@ class Users
         $this->db = $db;
     }
 
-    public function get_user($username, $password)
+    public function get_user($username, $plain_text_password)
     {
-        $sql = "SELECT * FROM users WHERE username = '$username' and password = '$password'";
-        $user = $this->db->fetchAssoc($sql);
+        $sql = "SELECT * FROM users WHERE username = ? and password = SHA2(?, 256)";
+        $user = $this->db->fetchAssoc($sql, array($username, $plain_text_password));
         return $user;
     }
 }
